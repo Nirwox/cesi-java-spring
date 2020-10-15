@@ -1,5 +1,6 @@
 package com.cesi.spring.model;
 
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,20 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class CompteEpargne {
-    @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    private int idCompteEpargne;
-    
-    private String numero;
-    
-    private String intitule;
-    
-    private double solde;
-    
+@DiscriminatorValue("Epargne")
+public class CompteEpargne extends Compte {
     private double tauxInteret;
-    
-    @ManyToOne
-    @JoinColumn(name="id_client", nullable=false)
-    private Client client;
 }
