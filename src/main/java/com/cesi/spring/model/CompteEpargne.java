@@ -4,6 +4,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,13 +17,17 @@ import lombok.NoArgsConstructor;
 public class CompteEpargne {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
-    int idCompteEpargne;
+    private int idCompteEpargne;
     
-    String numero;
+    private String numero;
     
-    String intitule;
+    private String intitule;
     
-    double solde;
+    private double solde;
     
-    double tauxInteret;
+    private double tauxInteret;
+    
+    @ManyToOne
+    @JoinColumn(name="id_client", nullable=false)
+    private Client client;
 }
