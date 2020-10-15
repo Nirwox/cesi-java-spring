@@ -25,9 +25,9 @@ public class Client {
     
     private String prenom;
     
-    @OneToMany(mappedBy="client")
-    private List<CompteCourant> comptesCourants;
-    
-    @OneToMany(mappedBy="client")
-    private List<CompteEpargne> comptesEpargnes;
+    public void Client(String identifiant, String nom, String prenom) {
+        this.identifiant = identifiant;
+        this.nom = nom;
+        this.prenom = prenom;
+    }
 }
