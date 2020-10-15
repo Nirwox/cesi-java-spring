@@ -2,22 +2,20 @@ package com.cesi.spring.controller;
 
 import com.cesi.spring.Exception.BadRequest;
 import com.cesi.spring.Exception.Conflict;
-import com.cesi.spring.Exception.NoContent;
 import com.cesi.spring.Exception.NotFound;
 import com.cesi.spring.model.Client;
+import com.cesi.spring.model.Compte;
 import com.cesi.spring.model.CompteCourant;
 import com.cesi.spring.model.CompteEpargne;
 import com.cesi.spring.model.Retour;
 import com.cesi.spring.model.Solde;
 import com.cesi.spring.repository.ClientRepository;
-import com.cesi.spring.repository.CompteCourantRepository;
-import com.cesi.spring.repository.CompteEpargneRepository;
+import com.cesi.spring.repository.CompteRepository;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -38,10 +36,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class ClientController {
     @Autowired
     private ClientRepository clientRepository;
+    
     @Autowired
-    private CompteCourantRepository compteCourantRepository;
-    @Autowired
-    private CompteEpargneRepository compteEpargneRepository;
+    private CompteRepository compteRepository;
     
     @GetMapping("/clients")
     public ResponseEntity<List<Client>> getClients() {
@@ -64,9 +61,9 @@ public class ClientController {
         List<CompteCourant> comptesCourantsClients = new ArrayList<>();
         try {
             Client client = clientRepository.findById(clientId).get();
-            for(CompteCourant compteCourant : compteCourantRepository.findAll()) {
-                if(compteCourant.getClient().getIdClient() == clientId) {
-                    comptesCourantsClients.add(compteCourant);
+            for(Compte compte : compteRepository.findAll()) {
+                if(compte.getClient().getIdClient() == clientId && compte.getTypeCompte().equals("Courant")) {
+                    comptesCourantsClients.add((CompteCourant)compte);
                 }
             }
         } catch (NoSuchElementException e) {
@@ -80,9 +77,9 @@ public class ClientController {
         List<CompteEpargne> comptesEpargnesClients = new ArrayList<>();
         try {
             Client client = clientRepository.findById(clientId).get();
-            for(CompteEpargne compteEpargne : compteEpargneRepository.findAll()) {
-                if(compteEpargne.getClient().getIdClient() == clientId) {
-                    comptesEpargnesClients.add(compteEpargne);
+            for(Compte compte : compteRepository.findAll()) {
+                if(compte.getClient().getIdClient() == clientId && compte.getTypeCompte().equals("Epargne")) {
+                    comptesEpargnesClients.add((CompteEpargne)compte);
                 }
             } 
         } catch (NoSuchElementException e) {
@@ -97,14 +94,9 @@ public class ClientController {
         double solde = 0;
         try {
             client = clientRepository.findById(clientId).get();
-            for(CompteEpargne compteEpargne : compteEpargneRepository.findAll()) {
-                if(compteEpargne.getClient().getIdClient() == clientId) {
-                    solde += compteEpargne.getSolde();
-                }
-            }
-            for(CompteCourant compteCourant : compteCourantRepository.findAll()) {
-                if(compteCourant.getClient().getIdClient() == clientId) {
-                    solde += compteCourant.getSolde();
+            for(Compte compte : compteRepository.findAll()) {
+                if(compte.getClient().getIdClient() == clientId) {
+                    solde += compte.getSolde();
                 }
             }
         } catch (NoSuchElementException e) {

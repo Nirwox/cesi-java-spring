@@ -5,7 +5,9 @@
  */
 package com.cesi.spring.model;
 
+import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,20 +26,21 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name="type_compte")
+@DiscriminatorColumn(name="type_compte", discriminatorType = DiscriminatorType.STRING)
 @DiscriminatorValue("MERE")
 public class Compte {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
-    private int idCompte;
+    protected int idCompte;
     
-    private String numero;
+    protected String numero;
     
-    private String intitule;
+    @Column(name="type_compte", insertable = false, updatable = false)
+    protected String typeCompte;
     
-    private double solde;
+    protected double solde;
     
     @ManyToOne
     @JoinColumn(name="id_client", nullable=false)
-    private Client client;
+    protected Client client;
 }
