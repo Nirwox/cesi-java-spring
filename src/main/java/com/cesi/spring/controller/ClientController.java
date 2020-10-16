@@ -1,8 +1,8 @@
 package com.cesi.spring.controller;
 
-import com.cesi.spring.Exception.BadRequest;
-import com.cesi.spring.Exception.Conflict;
-import com.cesi.spring.Exception.NotFound;
+import com.cesi.spring.exception.BadRequest;
+import com.cesi.spring.exception.Conflict;
+import com.cesi.spring.exception.NotFound;
 import com.cesi.spring.model.Client;
 import com.cesi.spring.model.Compte;
 import com.cesi.spring.model.CompteCourant;
@@ -57,7 +57,7 @@ public class ClientController {
     }
     
     @GetMapping("/clients/{clientId}/comptes/courants")
-    public ResponseEntity<List<CompteCourant>> getAllComptesCourants(@PathVariable int clientId) {
+    public ResponseEntity<List<CompteCourant>> getAllComptesCourants(@PathVariable int clientId) {        
         List<CompteCourant> comptesCourantsClients = new ArrayList<>();
         try {
             Client client = clientRepository.findById(clientId).get();
@@ -88,7 +88,7 @@ public class ClientController {
         return new ResponseEntity(comptesEpargnesClients,HttpStatus.OK);
     }
     
-    @GetMapping("/clients/{clientId}/soldes")
+    @GetMapping("/clients/{clientId}/solde")
     public ResponseEntity<Solde> getSoldeClient(@PathVariable int clientId) {
         Client client = new Client();
         double solde = 0;
