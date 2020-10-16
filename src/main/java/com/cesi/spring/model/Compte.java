@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.cesi.spring.model;
 
 import javax.persistence.Column;
@@ -25,18 +20,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name="type_compte", discriminatorType = DiscriminatorType.STRING)
-@DiscriminatorValue("MERE")
-public class Compte {
+@Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
+abstract class Compte {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     protected int idCompte;
     
     protected String numero;
-    
-    @Column(name="type_compte", insertable = false, updatable = false)
-    protected String typeCompte;
     
     protected double solde;
     
