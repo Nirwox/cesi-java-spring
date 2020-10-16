@@ -1,9 +1,8 @@
 package com.cesi.spring.controller;
 
-import com.cesi.spring.Exception.BadRequest;
-import com.cesi.spring.Exception.Conflict;
-import com.cesi.spring.Exception.NoContent;
-import com.cesi.spring.Exception.NotFound;
+import com.cesi.spring.exception.BadRequest;
+import com.cesi.spring.exception.Conflict;
+import com.cesi.spring.exception.NotFound;
 import com.cesi.spring.model.Client;
 import com.cesi.spring.model.CompteCourant;
 import com.cesi.spring.model.CompteEpargne;
@@ -13,11 +12,10 @@ import com.cesi.spring.repository.ClientRepository;
 import com.cesi.spring.repository.CompteCourantRepository;
 import com.cesi.spring.repository.CompteEpargneRepository;
 import java.sql.SQLIntegrityConstraintViolationException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import org.springframework.aop.AopInvocationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,17 +27,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- *
- * @author Hugo-Louvet
- */
 @RestController
 @RequestMapping("/rest/1")
 public class ClientController {
     @Autowired
     private ClientRepository clientRepository;
+    
     @Autowired
     private CompteCourantRepository compteCourantRepository;
+    
     @Autowired
     private CompteEpargneRepository compteEpargneRepository;
     
@@ -60,57 +56,41 @@ public class ClientController {
     }
     
     @GetMapping("/clients/{clientId}/comptes/courants")
-    public ResponseEntity<List<CompteCourant>> getAllComptesCourants(@PathVariable int clientId) {
-        List<CompteCourant> comptesCourantsClients = new ArrayList<>();
+    public ResponseEntity<List<CompteCourant>> getAllComptesCourants(@PathVariable int clientId) {  
         try {
             Client client = clientRepository.findById(clientId).get();
-            for(CompteCourant compteCourant : compteCourantRepository.findAll()) {
-                if(compteCourant.getClient().getIdClient() == clientId) {
-                    comptesCourantsClients.add(compteCourant);
-                }
-            }
         } catch (NoSuchElementException e) {
             throw new NotFound("Ce client n'existe pas");
         } 
-        return new ResponseEntity(comptesCourantsClients,HttpStatus.OK);
+        return new ResponseEntity(compteCourantRepository.getComptesCourants(clientId),HttpStatus.OK);
     }
     
     @GetMapping("/clients/{clientId}/comptes/epargnes")
     public ResponseEntity<List<CompteEpargne>> getAllComptesEpargnes(@PathVariable int clientId) {
-        List<CompteEpargne> comptesEpargnesClients = new ArrayList<>();
         try {
             Client client = clientRepository.findById(clientId).get();
-            for(CompteEpargne compteEpargne : compteEpargneRepository.findAll()) {
-                if(compteEpargne.getClient().getIdClient() == clientId) {
-                    comptesEpargnesClients.add(compteEpargne);
-                }
-            } 
         } catch (NoSuchElementException e) {
             throw new NotFound("Ce client n'existe pas");
         } 
-        return new ResponseEntity(comptesEpargnesClients,HttpStatus.OK);
+        return new ResponseEntity(compteEpargneRepository.getComptesEpargnes(clientId),HttpStatus.OK);
     }
     
-    @GetMapping("/clients/{clientId}/soldes")
+    @GetMapping("/clients/{clientId}/solde")
     public ResponseEntity<Solde> getSoldeClient(@PathVariable int clientId) {
         Client client = new Client();
-        double solde = 0;
+        Solde solde = new Solde();
         try {
             client = clientRepository.findById(clientId).get();
-            for(CompteEpargne compteEpargne : compteEpargneRepository.findAll()) {
-                if(compteEpargne.getClient().getIdClient() == clientId) {
-                    solde += compteEpargne.getSolde();
-                }
-            }
-            for(CompteCourant compteCourant : compteCourantRepository.findAll()) {
-                if(compteCourant.getClient().getIdClient() == clientId) {
-                    solde += compteCourant.getSolde();
-                }
+            solde.setClient(client);
+            try {
+                solde.setSolde(compteCourantRepository.getComptesSolde(clientId)+compteEpargneRepository.getComptesSolde(clientId));
+            } catch(AopInvocationException e) {
+                solde.setSolde(0);
             }
         } catch (NoSuchElementException e) {
             throw new NotFound("Ce client n'existe pas");
         }
-        return new ResponseEntity(new Solde(client,solde),HttpStatus.OK);
+        return new ResponseEntity(solde,HttpStatus.OK);
     }
     
     @PutMapping("/clients/{clientId}")

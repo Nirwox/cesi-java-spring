@@ -1,11 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.cesi.spring.model;
 
+import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -23,21 +20,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name="type_compte")
-@DiscriminatorValue("MERE")
-public class Compte {
+@Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
+abstract class Compte {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
-    private int idCompte;
+    protected int idCompte;
     
-    private String numero;
+    protected String numero;
     
-    private String intitule;
-    
-    private double solde;
+    protected double solde;
     
     @ManyToOne
     @JoinColumn(name="id_client", nullable=false)
-    private Client client;
+    protected Client client;
 }

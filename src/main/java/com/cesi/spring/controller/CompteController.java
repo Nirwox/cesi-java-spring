@@ -5,9 +5,9 @@
  */
 package com.cesi.spring.controller;
 
-import com.cesi.spring.model.Compte;
 import com.cesi.spring.model.CompteCourant;
-import com.cesi.spring.repository.CompteRepository;
+import com.cesi.spring.repository.CompteCourantRepository;
+import com.cesi.spring.repository.CompteEpargneRepository;
 import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,22 +20,25 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/rest/1")
 public class CompteController {
     @Autowired
-    private CompteRepository compteRepository;
+    private CompteCourantRepository compteCourantRepository;
+    
+    @Autowired
+    private CompteEpargneRepository compteEpargneRepository;
     
     @PostMapping("/compteCourant")
     public void createCompteCourant(CompteCourant newCompte) {
-        compteRepository.save(newCompte);
+        compteCourantRepository.save(newCompte);
     }
 
     @DeleteMapping("/compteCourant/{idCompte}")
     public void deleteCompteCourant(@PathVariable int idCompte) {
-        compteRepository.deleteById(idCompte);
+        compteCourantRepository.deleteById(idCompte);
         System.out.println("Le compte a bien été supprimé.");
 
-        Compte compte = new Compte();
+        CompteCourant compte = new CompteCourant();
         try {
-            compte = compteRepository.findById(idCompte).get();
-            compteRepository.delete(compte);
+            compte = compteCourantRepository.findById(idCompte).get();
+            compteCourantRepository.delete(compte);
         } catch (NoSuchElementException e) {
             throw new RuntimeException("Ce compte courant n'existe pas");
         }
@@ -43,6 +46,6 @@ public class CompteController {
 
     @PostMapping("/compteCourant/{idCompte")
     public void updateCompteCourant(int idCompte){
-        compteRepository.findById(idCompte);
+        compteCourantRepository.findById(idCompte);
     }
 }
