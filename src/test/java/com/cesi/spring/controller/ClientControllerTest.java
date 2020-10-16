@@ -15,6 +15,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.aop.AopInvocationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -61,42 +62,26 @@ public class ClientControllerTest {
     @Test
     public void getClientCompteCourantTest() {
         int clientId =11;
-        List<Compte> comptesCC = new ArrayList<>();
-        Iterable<Compte> comptesRepo = compteRepository.findAll();
-        for(Compte cpt : comptesRepo) {
-            if(cpt.getTypeCompte().equals("Courant") && cpt.getClient().equals(clientRepository.findById(clientId).get())) {
-                comptesCC.add(cpt);
-            }
-        }
-        assertThat(comptesCC).isEqualTo(clientController.getAllComptesCourants(clientId).getBody());
+        assertThat(compteRepository.getComptesCourants(clientId)).isEqualTo(clientController.getAllComptesCourants(clientId).getBody());
     }
     
     @Test
     public void getClientCompteEpargneTest() {
         int clientId =11;
-        List<Compte> comptesEC = new ArrayList<>();
-        Iterable<Compte> comptesRepo = compteRepository.findAll();
-        for(Compte cpt : comptesRepo) {
-            if(cpt.getTypeCompte().equals("Epargne") && cpt.getClient().equals(clientRepository.findById(clientId).get())) {
-                comptesEC.add(cpt);
-            }
-        }
-        assertThat(comptesEC).isEqualTo(clientController.getAllComptesEpargnes(clientId).getBody());
+        assertThat(compteRepository.getComptesEpargnes(clientId)).isEqualTo(clientController.getAllComptesEpargnes(clientId).getBody());
     }
     
     @Test
     public void getSoldeTest() {
         int clientId = 21;
-        double solde = 0;
+        Solde solde = new Solde();
         Client client = clientRepository.findById(clientId).get();
-        
-        Iterable<Compte> comptesRepo = compteRepository.findAll();
-        for(Compte cpt : comptesRepo) {
-            if(cpt.getClient().equals(clientRepository.findById(clientId).get())) {
-                solde += cpt.getSolde();
-            }
+        solde.setClient(client);
+        try {
+            solde.setSolde(compteRepository.getComptesSolde(clientId));
+        } catch(AopInvocationException e) {
+            solde.setSolde(0);
         }
-        Solde soldeRetour = new Solde(client,solde);
-        assertThat(soldeRetour).isEqualTo(clientController.getSoldeClient(clientId).getBody());
+        assertThat(solde).isEqualTo(clientController.getSoldeClient(clientId).getBody());
     }
 }
