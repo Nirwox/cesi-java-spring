@@ -8,10 +8,10 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CompteCourantRepository extends CrudRepository<CompteCourant, Integer> {
-    @Query(value = "SELECT * FROM compte WHERE type_compte = 'Courant' AND id_client = ?1", nativeQuery = true)
+    @Query(value = "SELECT * FROM compte_courant WHERE id_client = ?1", nativeQuery = true)
     List<CompteCourant> getComptesCourants(int clientId);
     
-    @Query(value = "SELECT SUM(solde) FROM compte WHERE type_compte = 'Courant' AND id_client = ?1", nativeQuery = true)
+    @Query(value = "SELECT SUM(solde) FROM compte_courant WHERE id_client = ?1", nativeQuery = true)
     int getComptesSolde(int clientId);
 }
 
