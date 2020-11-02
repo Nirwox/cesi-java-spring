@@ -27,9 +27,11 @@ import org.springframework.web.bind.annotation.*;
 public class CompteController {
     @Autowired
     private CompteCourantRepository compteCourantRepository;
+
+    @Autowired
     private CompteEpargneRepository compteEpargneRepository;
 
-    @PutMapping("/comptes/courant/{compteId}/update")
+    @PutMapping("/comptes/courant/{compteId}")
     public ResponseEntity<String> updateCompteCourant(@PathVariable int compteId, @RequestBody CompteCourant compteUpdate) {
         CompteCourant compte = new CompteCourant();
 
@@ -52,7 +54,7 @@ public class CompteController {
         return new ResponseEntity("Le compte a bien été modifié",HttpStatus.OK);
     }
 
-    @DeleteMapping("/comptes/courant/{idCompte}/delete")
+    @DeleteMapping("/comptes/courant/{idCompte}")
     public ResponseEntity<String> deleteCompteCourant(@PathVariable int idCompte) {
         CompteCourant compteCourant = new CompteCourant();
         try {
@@ -69,7 +71,7 @@ public class CompteController {
         return new ResponseEntity("Le compte épargne " + compteCourant.getNumero() + "a bien été supprimé.", HttpStatus.OK);
     }
 
-    @PutMapping("/comptes/epargne/{compteId}/update")
+    @PutMapping("/comptes/epargne/{compteId}")
     public ResponseEntity<String> updateCompteEpargne(@PathVariable int compteId, @RequestBody CompteEpargne compteUpdate) {
         CompteEpargne compte = new CompteEpargne();
 
@@ -92,7 +94,7 @@ public class CompteController {
         return new ResponseEntity("Le compte a bien été modifié",HttpStatus.OK);
     }
 
-    @DeleteMapping("/comptes/epargne/{idCompte}/delete")
+    @DeleteMapping("/comptes/epargne/{idCompte}")
     public ResponseEntity<String> deleteCompteEpargne(@PathVariable int idCompte) {
         CompteEpargne compteEpargne = new CompteEpargne();
         try {
@@ -142,7 +144,7 @@ public class CompteController {
     }
 
     @PutMapping("/comptes/epargne/{idCompte}/crediter/{montantACrediter}")
-    public ResponseEntity<Retour> crediterCompteEpargne(@PathVariable int idCompte, @PathVariable int montantACrediter){
+    public ResponseEntity<CompteEpargne> crediterCompteEpargne(@PathVariable int idCompte, @PathVariable int montantACrediter){
         CompteEpargne compteEpargne = new CompteEpargne();
         if(montantACrediter <= 0){
             throw new BadRequest("Merci d'indiquer une valeur à créditer positive.");
@@ -154,11 +156,11 @@ public class CompteController {
         } catch (NoSuchElementException ex) {
             throw new NotFound("Ce compte épargne n'existe pas !");
         }
-        return new ResponseEntity(new Retour("Le compte épargne a bien été crédité."), HttpStatus.OK);
+        return new ResponseEntity(compteEpargne, HttpStatus.OK);
     }
 
     @PutMapping("/comptes/courant/{idCompte}/crediter/{montantACrediter}")
-    public ResponseEntity<Retour> crediterCompteCourant(@PathVariable int idCompte, @PathVariable int montantACrediter){
+    public ResponseEntity<CompteCourant> crediterCompteCourant(@PathVariable int idCompte, @PathVariable int montantACrediter){
         CompteCourant compteCourant = new CompteCourant();
         if(montantACrediter <= 0){
             throw new BadRequest("Merci d'indiquer une valeur à créditer positive.");
@@ -170,11 +172,11 @@ public class CompteController {
         } catch (NoSuchElementException ex) {
             throw new NotFound("Ce compte courant n'existe pas !");
         }
-        return new ResponseEntity(new Retour("Le compte courant a bien été crédité."), HttpStatus.OK);
+        return new ResponseEntity(compteCourant, HttpStatus.OK);
     }
 
     @PutMapping("/comptes/epargne/{idCompte}/debiter/{montantADebiter}")
-    public ResponseEntity<Retour> debiterCompteEpargne(@PathVariable int idCompte, @PathVariable int montantADebiter){
+    public ResponseEntity<CompteEpargne> debiterCompteEpargne(@PathVariable int idCompte, @PathVariable int montantADebiter){
         CompteEpargne compteEpargne = new CompteEpargne();
         if(montantADebiter <= 0){
             throw new BadRequest("Merci d'indiquer une valeur à créditer positive.");
@@ -186,11 +188,11 @@ public class CompteController {
         } catch (NoSuchElementException ex) {
             throw new NotFound("Ce compte épargne n'existe pas !");
         }
-        return new ResponseEntity(new Retour("Le compte épargne a bien été débité."), HttpStatus.OK);
+        return new ResponseEntity(compteEpargne, HttpStatus.OK);
     }
 
     @PutMapping("/comptes/courant/{idCompte}/debiter/{montantACrediter}")
-    public ResponseEntity<Retour> debiterCompteCourant(@PathVariable int idCompte, @PathVariable int montantADebiter){
+    public ResponseEntity<CompteCourant> debiterCompteCourant(@PathVariable int idCompte, @PathVariable int montantADebiter){
         CompteCourant compteCourant = new CompteCourant();
         if(montantADebiter <= 0){
             throw new BadRequest("Merci d'indiquer une valeur à créditer positive.");
@@ -202,6 +204,6 @@ public class CompteController {
         } catch (NoSuchElementException ex) {
             throw new NotFound("Ce compte courant n'existe pas !");
         }
-        return new ResponseEntity(new Retour("Le compte courant a bien été débité."), HttpStatus.OK);
+        return new ResponseEntity(compteCourant, HttpStatus.OK);
     }
 }
