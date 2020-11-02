@@ -13,4 +13,12 @@ import lombok.NoArgsConstructor;
 @DiscriminatorValue("Epargne")
 public class CompteEpargne extends Compte {
     private double tauxInteret;
+
+    @Override
+    public String toString(){
+        return("Le compte épargne numéro " + numero + " est possédé par le client "
+                + client.getNom() + " " + client.getPrenom() + ". Son solde s'élève à "
+                + solde + " et son taux intérêt est de " + tauxInteret + "."
+        );
+    }
 }

@@ -14,4 +14,12 @@ import lombok.NoArgsConstructor;
 public class CompteCourant extends Compte {    
     private double montantDecouvertAutorise;
 
+    @Override
+    public String toString(){
+        return("Le compte épargne numéro " + numero + " est possédé par le client "
+                + client.getNom() + " " + client.getPrenom() + ". Son solde s'élève à "
+                + solde + " et son découvert est de " + montantDecouvertAutorise + "."
+        );
+    }
+
 }
