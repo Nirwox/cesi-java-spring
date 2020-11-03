@@ -1,6 +1,7 @@
 package com.cesi.spring.controller;
 
 import com.cesi.spring.model.Client;
+import com.cesi.spring.model.Retour;
 import com.cesi.spring.model.Solde;
 import com.cesi.spring.repository.ClientRepository;
 import com.cesi.spring.repository.CompteCourantRepository;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.aop.AopInvocationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
@@ -38,6 +40,16 @@ public class ClientControllerTest {
         Client clientFromController = clientController.getOneClient(clientId).getBody();
         
         assertThat(clientFromRepo).isEqualTo(clientFromController);
+    }
+    
+    @Test
+    public void deleteOneClientTest() {
+        int clientId = 21;
+        ResponseEntity<Retour> retour = clientController.deleteClient(clientId);
+        
+        Client clientFromRepo = clientRepository.findById(clientId).get();
+        
+        assertThat(retour.getBody().getMessage()).isEqualTo("Le client a bien été supprimé");
     }
     
     @Test
