@@ -49,7 +49,7 @@ public class ClientControllerTest {
         
         Client clientFromRepo = clientRepository.findById(clientId).get();
         
-        assertThat(retour.getBody().getMessage()).isEqualTo("Le client a bien été supprimé");
+        assertThat(retour.getBody().getMessage()).isEqualTo("Merci de supprimer les comptes courants et/ou épargnes de ce client avant de le supprimer");
     }
     
     @Test
