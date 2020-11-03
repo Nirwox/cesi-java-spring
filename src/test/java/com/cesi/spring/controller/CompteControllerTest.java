@@ -90,4 +90,19 @@ public class CompteControllerTest {
 
         assertThat(compteCourant).isEqualTo(compteController.debiterCompteCourant(idCompte, montantDebit).getBody());
     }
+
+    @Test
+    public void calculerInteretTest(){
+        int idCompte = 1;
+        CompteEpargne compteEpargne = compteEpargneRepository.findById(idCompte).get();
+
+        try{
+            double nouveauSolde = compteEpargne.getSolde() + (compteEpargne.getSolde() * compteEpargne.getTauxInteret());
+            compteEpargne.setSolde(nouveauSolde);
+        }catch (NoSuchElementException ex){
+            compteEpargne.setSolde(compteEpargne.getSolde());
+        }
+
+        assertThat(compteEpargne).isEqualTo(compteController.calculerInterets(idCompte).getBody());
+    }
 }
