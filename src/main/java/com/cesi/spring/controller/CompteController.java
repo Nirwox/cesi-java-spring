@@ -179,7 +179,7 @@ public class CompteController {
     public ResponseEntity<CompteEpargne> debiterCompteEpargne(@PathVariable int idCompte, @PathVariable int montantADebiter){
         CompteEpargne compteEpargne = new CompteEpargne();
         if(montantADebiter <= 0){
-            throw new BadRequest("Merci d'indiquer une valeur à créditer positive.");
+            throw new BadRequest("Merci d'indiquer une valeur à débiter positive.");
         }
         try{
             compteEpargne = compteEpargneRepository.findById(idCompte).get();
@@ -195,7 +195,7 @@ public class CompteController {
     public ResponseEntity<CompteCourant> debiterCompteCourant(@PathVariable int idCompte, @PathVariable int montantADebiter){
         CompteCourant compteCourant = new CompteCourant();
         if(montantADebiter <= 0){
-            throw new BadRequest("Merci d'indiquer une valeur à créditer positive.");
+            throw new BadRequest("Merci d'indiquer une valeur à débiter positive.");
         }
         try{
             compteCourant = compteCourantRepository.findById(idCompte).get();
@@ -205,5 +205,30 @@ public class CompteController {
             throw new NotFound("Ce compte courant n'existe pas !");
         }
         return new ResponseEntity(compteCourant, HttpStatus.OK);
+    }
+
+    @PutMapping("/comptes/epargne/{idCompte}/calculerInterets")
+    public ResponseEntity<CompteEpargne> calculerInterets(@PathVariable int idCompte){
+        CompteEpargne compteEpargne = new CompteEpargne();
+
+        try{
+            compteEpargne = compteEpargneRepository.findById(idCompte).get();
+            if(null != compteEpargne) {
+                if(!compteEpargne.getNumero().isEmpty() && compteEpargne.getClient() != null && compteEpargne.getTauxInteret() > 0 && compteEpargne.getTauxInteret() < 5) {
+                    double nouveauSolde = compteEpargne.getSolde() + (compteEpargne.getSolde() * compteEpargne.getTauxInteret());
+                    compteEpargne.setSolde(nouveauSolde);
+                    compteEpargneRepository.save(compteEpargne);
+                }
+                else{
+                    throw new BadRequest("Ce compte épargne ne possède pas les bonnes informations.");
+                }
+            }
+            else{
+                throw new BadRequest("Ce compte épargne ne possède pas les bonnes informations.");
+            }
+        } catch (NoSuchElementException ex){
+            throw new NotFound("Ce compte épargne n'existe pas !");
+        }
+        return new ResponseEntity(compteEpargne, HttpStatus.OK);
     }
 }
