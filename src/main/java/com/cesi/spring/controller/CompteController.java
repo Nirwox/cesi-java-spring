@@ -5,9 +5,9 @@
  */
 package com.cesi.spring.controller;
 
-import com.cesi.spring.exception.BadRequest;
-import com.cesi.spring.exception.Conflict;
-import com.cesi.spring.exception.NotFound;
+import com.cesi.spring.Exception.BadRequest;
+import com.cesi.spring.Exception.Conflict;
+import com.cesi.spring.Exception.NotFound;
 import com.cesi.spring.model.Client;
 import com.cesi.spring.model.CompteCourant;
 import com.cesi.spring.model.CompteEpargne;
