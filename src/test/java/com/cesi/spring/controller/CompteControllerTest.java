@@ -168,4 +168,28 @@ public class CompteControllerTest {
             }
         }
     }
+    
+    @Test
+    public void effectuerVirement() {
+        int idCompteFrom = 1;
+        int idCompteTo = 2;
+        float montant = 100;
+        
+        CompteCourant compteCourantFrom = compteCourantRepository.findById(idCompteFrom).get();
+        CompteCourant compteCourantTo = compteCourantRepository.findById(idCompteTo).get();
+        
+        double soldeBeforeFrom = compteCourantFrom.getSolde();
+        double soldeBeforeTo = compteCourantTo.getSolde();
+            
+        compteController.effectuerVirement(idCompteFrom, idCompteTo, montant);
+        
+        double soldeAfterFrom = compteCourantFrom.getSolde();
+        double soldeAfterTo = compteCourantTo.getSolde();
+        
+        if(soldeBeforeFrom == soldeAfterFrom+100 && soldeBeforeTo == soldeAfterTo-100) {
+            assertThat(true);
+        } else {
+            assertThat(false);
+        } 
+    }
 }
