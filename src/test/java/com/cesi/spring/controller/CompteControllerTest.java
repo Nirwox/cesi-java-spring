@@ -1,5 +1,7 @@
 package com.cesi.spring.controller;
 
+import com.cesi.spring.Exception.BadRequest;
+import com.cesi.spring.Exception.NotFound;
 import com.cesi.spring.model.Client;
 import com.cesi.spring.model.CompteCourant;
 import com.cesi.spring.model.CompteEpargne;
@@ -112,7 +114,7 @@ public class CompteControllerTest {
         int idCompteTo = 1;
         float montant = 100;
         
-        assertThat(compteController.effectuerVirement(idCompteFrom, idCompteTo, montant)).isEqualTo("Un virement ne peut être effectué sur un même compte");
+        assertThat(compteController.effectuerVirement(idCompteFrom, idCompteTo, montant)).isEqualTo(new BadRequest("Un virement ne peut être effectué sur un même compte"));
     }
     
     @Test
@@ -121,7 +123,7 @@ public class CompteControllerTest {
         int idCompteTo = 2;
         float montant = -100;
         
-        assertThat(compteController.effectuerVirement(idCompteFrom, idCompteTo, montant)).isEqualTo("Le montant du virement ne peut pas être négatif");
+        assertThat(compteController.effectuerVirement(idCompteFrom, idCompteTo, montant)).isEqualTo(new BadRequest("Un virement ne peut être effectué sur un même compte"));
     }
     
     @Test
@@ -130,7 +132,7 @@ public class CompteControllerTest {
         int idCompteTo = 1000000;
         float montant = 100;
         
-        assertThat(compteController.effectuerVirement(idCompteFrom, idCompteTo, montant)).isEqualTo(String.format("Le compte courant '%s' n'existe pas !",idCompteTo));
+        assertThat(compteController.effectuerVirement(idCompteFrom, idCompteTo, montant)).isEqualTo(new NotFound(String.format("Le compte courant '%s' n'existe pas !",idCompteTo)));
     }
     
     @Test
@@ -139,6 +141,6 @@ public class CompteControllerTest {
         int idCompteTo = 1;
         float montant = 100;
         
-        assertThat(compteController.effectuerVirement(idCompteFrom, idCompteTo, montant)).isEqualTo(String.format("Le compte courant '%s' n'existe pas !",idCompteFrom));
+        assertThat(compteController.effectuerVirement(idCompteFrom, idCompteTo, montant)).isEqualTo(new NotFound(String.format("Le compte courant '%s' n'existe pas !",idCompteFrom)));
     }
 }
