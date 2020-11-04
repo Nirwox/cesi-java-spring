@@ -34,22 +34,12 @@ public class ClientControllerTest {
     
     @Test
     public void getOneClientTest() {
-        int clientId = 21;
+        int clientId = 20;
         Client clientFromRepo = clientRepository.findById(clientId).get();
         
         Client clientFromController = clientController.getOneClient(clientId).getBody();
         
         assertThat(clientFromRepo).isEqualTo(clientFromController);
-    }
-    
-    @Test
-    public void deleteOneClientTest() {
-        int clientId = 21;
-        ResponseEntity<Retour> retour = clientController.deleteClient(clientId);
-        
-        Client clientFromRepo = clientRepository.findById(clientId).get();
-        
-        assertThat(retour.getBody().getMessage()).isEqualTo("Merci de supprimer les comptes courants et/ou épargnes de ce client avant de le supprimer");
     }
     
     @Test
@@ -79,7 +69,7 @@ public class ClientControllerTest {
     
     @Test
     public void getSoldeTest() {
-        int clientId = 21;
+        int clientId = 20;
         Solde solde = new Solde();
         Client client = clientRepository.findById(clientId).get();
         solde.setClient(client);
