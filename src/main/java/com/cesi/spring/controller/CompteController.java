@@ -6,16 +6,15 @@
 package com.cesi.spring.controller;
 
 import com.cesi.spring.Exception.BadRequest;
-import com.cesi.spring.Exception.Conflict;
 import com.cesi.spring.Exception.NotFound;
-import com.cesi.spring.model.Client;
 import com.cesi.spring.model.CompteCourant;
 import com.cesi.spring.model.CompteEpargne;
+import com.cesi.spring.model.OperationAccount;
 import com.cesi.spring.model.Retour;
 import com.cesi.spring.repository.CompteCourantRepository;
 import com.cesi.spring.repository.CompteEpargneRepository;
+import com.cesi.spring.repository.OperationAccountRepository;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,6 +34,9 @@ public class CompteController {
 
     @Autowired
     private CompteEpargneRepository compteEpargneRepository;
+    
+    @Autowired
+    private OperationAccountRepository operationAccountRepository;
 
     @PutMapping("/comptes/courant/{compteId}")
     public ResponseEntity<String> updateCompteCourant(@PathVariable int compteId, @RequestBody CompteCourant compteUpdate) {
@@ -263,6 +265,10 @@ public class CompteController {
         
         compteCourantTo.setSolde(compteCourantTo.getSolde()+montant);
         compteCourantRepository.save(compteCourantTo);
+        
+        OperationAccount operation = new OperationAccount(compteCourantFrom,compteCourantTo,montant);
+        operationAccountRepository.save(operation);
+        
         
         return new ResponseEntity(new Retour("Le virement a bien été effectué"), HttpStatus.OK);
     }

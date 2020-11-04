@@ -6,12 +6,15 @@ import com.cesi.spring.Exception.NotFound;
 import com.cesi.spring.model.Client;
 import com.cesi.spring.model.CompteCourant;
 import com.cesi.spring.model.CompteEpargne;
+import com.cesi.spring.model.OperationAccount;
 import com.cesi.spring.model.Retour;
 import com.cesi.spring.model.Solde;
 import com.cesi.spring.repository.ClientRepository;
 import com.cesi.spring.repository.CompteCourantRepository;
 import com.cesi.spring.repository.CompteEpargneRepository;
+import com.cesi.spring.repository.OperationAccountRepository;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import org.springframework.aop.AopInvocationException;
@@ -38,6 +41,9 @@ public class ClientController {
     
     @Autowired
     private CompteEpargneRepository compteEpargneRepository;
+    
+    @Autowired
+    private OperationAccountRepository operationAccountRepository;
     
     @GetMapping("/clients")
     public ResponseEntity<List<Client>> getClients() {
@@ -147,4 +153,17 @@ public class ClientController {
         }
         return new ResponseEntity(new Retour("Le client a bien été supprimé"),HttpStatus.OK);
     } 
+    
+    @GetMapping("/clients/{clientId}/operations")
+    public ResponseEntity<List<OperationAccount>> getOperations(@PathVariable int clientId) {
+        Client client = new Client();
+        List<OperationAccount> operations = new ArrayList<>();
+        try {
+            client = clientRepository.findById(clientId).get();
+            operations = operationAccountRepository.getOperations(clientId);
+        } catch (NoSuchElementException e) {
+            throw new NotFound("Ce client n'existe pas");
+        } 
+        return new ResponseEntity(operations,HttpStatus.OK);
+    }
 }
