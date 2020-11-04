@@ -231,4 +231,44 @@ public class CompteController {
         }
         return new ResponseEntity(compteEpargne, HttpStatus.OK);
     }
+    
+    @GetMapping("/comptes/courants/{idCompteFrom}/virement/{idCompteTo}/montant/{montant}")
+    public ResponseEntity<Retour> effectuerVirement(@PathVariable int idCompteFrom, @PathVariable int idCompteTo, @PathVariable float montant) {
+        CompteCourant compteCourantFrom = new CompteCourant();
+        CompteCourant compteCourantTo = new CompteCourant();
+        if(idCompteFrom == idCompteTo) {
+            throw new BadRequest("Un virement ne peut être effectué sur un même compte");
+        }
+        if(montant < 0) {
+            throw new BadRequest("Le montant du virement ne peut pas être négatif");
+        }
+        try {
+            compteCourantFrom = getCompteCourant(idCompteFrom);
+        } catch(NotFound e) {
+            throw e;
+        }
+        try {
+            compteCourantTo = getCompteCourant(idCompteTo);
+        } catch(NotFound e) {
+            throw e;
+        }
+        
+        compteCourantFrom.setSolde(compteCourantFrom.getSolde()-montant);
+        compteCourantRepository.save(compteCourantFrom);
+        
+        compteCourantTo.setSolde(compteCourantTo.getSolde()+montant);
+        compteCourantRepository.save(compteCourantTo);
+        
+        return new ResponseEntity(new Retour("Le virement a bien été effectué"), HttpStatus.OK);
+    }
+    
+    public CompteCourant getCompteCourant(int idCompte) {
+        CompteCourant compteCourant = new CompteCourant();
+        try {
+            compteCourant = compteCourantRepository.findById(idCompte).get();
+        } catch(NoSuchElementException e) {
+            throw new NotFound(String.format("Le compte courant '%s' n'existe pas !",idCompte));
+        }
+        return compteCourant;
+    }
 }

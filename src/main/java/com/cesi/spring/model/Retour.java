@@ -8,14 +8,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Retour {
-    private int code;
     private String message;
-
-    public Retour(int code) {
-        this.code = code;
-    }
-
-    public Retour(String message) {
-        this.message = message;
-    }
 }

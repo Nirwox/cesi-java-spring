@@ -5,7 +5,7 @@
  */
 package com.cesi.spring.Exception;
 
-import com.cesi.spring.model.Retour;
+import com.cesi.spring.model.RetourException;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.http.HttpStatus;
@@ -13,10 +13,10 @@ import org.springframework.http.HttpStatus;
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class NoContent extends RuntimeException {
-    private final transient Retour retour;
+    private final transient RetourException retour;
 
     public NoContent(final String message) {
         super();
-        retour = new Retour(HttpStatus.NO_CONTENT.value(), message);
+        retour = new RetourException(HttpStatus.NO_CONTENT.value(), message);
     }
 }

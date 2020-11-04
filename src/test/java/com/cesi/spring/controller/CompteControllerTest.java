@@ -105,4 +105,40 @@ public class CompteControllerTest {
 
         assertThat(compteEpargne).isEqualTo(compteController.calculerInterets(idCompte).getBody());
     }
+    
+    @Test
+    public void effectuerVirementSameAccountId() {
+        int idCompteFrom = 1;
+        int idCompteTo = 1;
+        float montant = 100;
+        
+        assertThat(compteController.effectuerVirement(idCompteFrom, idCompteTo, montant)).isEqualTo("Un virement ne peut être effectué sur un même compte");
+    }
+    
+    @Test
+    public void effectuerVirementMontantNegatif() {
+        int idCompteFrom = 1;
+        int idCompteTo = 2;
+        float montant = -100;
+        
+        assertThat(compteController.effectuerVirement(idCompteFrom, idCompteTo, montant)).isEqualTo("Le montant du virement ne peut pas être négatif");
+    }
+    
+    @Test
+    public void effectuerVirementAccountToInexistant() {
+        int idCompteFrom = 1;
+        int idCompteTo = 1000000;
+        float montant = 100;
+        
+        assertThat(compteController.effectuerVirement(idCompteFrom, idCompteTo, montant)).isEqualTo(String.format("Le compte courant '%s' n'existe pas !",idCompteTo));
+    }
+    
+    @Test
+    public void effectuerVirementAccountFromInexistant() {
+        int idCompteFrom = 100000;
+        int idCompteTo = 1;
+        float montant = 100;
+        
+        assertThat(compteController.effectuerVirement(idCompteFrom, idCompteTo, montant)).isEqualTo(String.format("Le compte courant '%s' n'existe pas !",idCompteFrom));
+    }
 }

@@ -113,7 +113,7 @@ public class ClientController {
         } catch (NoSuchElementException e) {
             throw new NotFound("Ce client n'existe pas");
         } 
-        return new ResponseEntity(new Retour(HttpStatus.OK.value(),"Le client a bien été modifié"),HttpStatus.OK);
+        return new ResponseEntity(new Retour("Le client a bien été modifié"),HttpStatus.OK);
     }
         
     @PostMapping("/clients")
@@ -127,7 +127,7 @@ public class ClientController {
         } else {
             throw new BadRequest("Merci de spécifier les informations du client");
         } 
-        return new ResponseEntity(new Retour(HttpStatus.OK.value(),"Le client a bien été crée"),HttpStatus.OK);
+        return new ResponseEntity(new Retour("Le client a bien été crée"),HttpStatus.OK);
     }
     
     @DeleteMapping("/clients/{clientId}")
@@ -145,6 +145,6 @@ public class ClientController {
                 throw new Conflict("Merci de supprimer les comptes courants et/ou épargnes de ce client avant de le supprimer");
             }
         }
-        return new ResponseEntity(new Retour(HttpStatus.OK.value(),"Le client a bien été supprimé"),HttpStatus.OK);
+        return new ResponseEntity(new Retour("Le client a bien été supprimé"),HttpStatus.OK);
     } 
 }
