@@ -2,21 +2,14 @@ package com.cesi.spring.controller;
 
 import com.cesi.spring.Exception.BadRequest;
 import com.cesi.spring.Exception.NotFound;
-import com.cesi.spring.model.Client;
 import com.cesi.spring.model.CompteCourant;
 import com.cesi.spring.model.CompteEpargne;
-import com.cesi.spring.model.Solde;
-import com.cesi.spring.repository.ClientRepository;
 import com.cesi.spring.repository.CompteCourantRepository;
 import com.cesi.spring.repository.CompteEpargneRepository;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.NoSuchElementException;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.aop.AopInvocationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -114,7 +107,15 @@ public class CompteControllerTest {
         int idCompteTo = 1;
         float montant = 100;
         
-        assertThat(compteController.effectuerVirement(idCompteFrom, idCompteTo, montant)).isEqualTo(new BadRequest("Un virement ne peut être effectué sur un même compte"));
+        try {
+            compteController.effectuerVirement(idCompteFrom, idCompteTo, montant);
+        } catch (BadRequest e) {
+            if(e.getRetour().getMessage().equals("Un virement ne peut être effectué sur un même compte")) {
+                assertThat(true);
+            } else {
+                assertThat(false);
+            }
+        }
     }
     
     @Test
@@ -123,7 +124,15 @@ public class CompteControllerTest {
         int idCompteTo = 2;
         float montant = -100;
         
-        assertThat(compteController.effectuerVirement(idCompteFrom, idCompteTo, montant)).isEqualTo(new BadRequest("Un virement ne peut être effectué sur un même compte"));
+        try {
+            compteController.effectuerVirement(idCompteFrom, idCompteTo, montant);
+        } catch (BadRequest e) {
+            if(e.getRetour().getMessage().equals("Le montant du virement ne peut pas être négatif")) {
+                assertThat(true);
+            } else {
+                assertThat(false);
+            }
+        }
     }
     
     @Test
@@ -132,7 +141,15 @@ public class CompteControllerTest {
         int idCompteTo = 1000000;
         float montant = 100;
         
-        assertThat(compteController.effectuerVirement(idCompteFrom, idCompteTo, montant)).isEqualTo(new NotFound(String.format("Le compte courant '%s' n'existe pas !",idCompteTo)));
+        try {
+            compteController.effectuerVirement(idCompteFrom, idCompteTo, montant);
+        } catch (NotFound e) {
+            if(e.getRetour().getMessage().equals(String.format("Le compte courant '%s' n'existe pas !",idCompteTo))) {
+                assertThat(true);
+            } else {
+                assertThat(false);
+            }
+        }
     }
     
     @Test
@@ -141,6 +158,14 @@ public class CompteControllerTest {
         int idCompteTo = 1;
         float montant = 100;
         
-        assertThat(compteController.effectuerVirement(idCompteFrom, idCompteTo, montant)).isEqualTo(new NotFound(String.format("Le compte courant '%s' n'existe pas !",idCompteFrom)));
+        try {
+            compteController.effectuerVirement(idCompteFrom, idCompteTo, montant);
+        } catch (NotFound e) {
+            if(e.getRetour().getMessage().equals(String.format("Le compte courant '%s' n'existe pas !",idCompteFrom))) {
+                assertThat(true);
+            } else {
+                assertThat(false);
+            }
+        }
     }
 }
