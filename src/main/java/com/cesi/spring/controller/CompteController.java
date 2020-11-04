@@ -22,6 +22,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/** 
+ * La classe CompteController vient gérer toutes les actions possible pouvznt être effectué sur un compte courant et/ou épargne
+ * 
+ * @author Louvet Hugo
+ */
 @RestController
 @RequestMapping("/rest/1")
 public class CompteController {
